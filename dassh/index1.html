@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم والإدارة الشاملة - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root[data-theme="light"] {
+            --primary: #2563eb; --secondary: #10b981; --danger: #ef4444; --warning: #f59e0b;
+            --card-bg: #ffffff; --bg-light: #f8fafc; --text-main: #334155; --text-muted: #64748b;
+            --border: #e2e8f0; --header-bg: #0f172a; --input-bg: #fafafa;
+        }
+        :root[data-theme="dark"] {
+            --primary: #3b82f6; --secondary: #10b981; --danger: #f87171; --warning: #fbbf24;
+            --card-bg: #1e293b; --bg-light: #0f172a; --text-main: #f1f5f9; --text-muted: #94a3b8;
+            --border: #334155; --header-bg: #020617; --input-bg: #0f172a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-main); min-height: 100vh; }
+
+        header { background-color: var(--header-bg); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.3rem; font-weight: 800; color: #38bdf8; display: flex; gap: 10px; align-items: center; }
+        .theme-toggle-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #f1f5f9; padding: 8px 14px; border-radius: 20px; cursor: pointer; font-weight: 700; }
+
+        main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); }
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; display: flex; gap: 8px; align-items: center; }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); }
+        .form-control { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; background-color: var(--input-bg); color: var(--text-main); }
+        .btn { border: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; padding: 4px 8px; font-size: 0.8rem; width: auto; }
+
+        table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.85rem; }
+        th, td { padding: 10px; border-bottom: 1px solid var(--border); }
+        th { color: var(--text-muted); background: rgba(0,0,0,0.02); }
+
+        .status-badge-online { background: rgba(16,185,129,0.15); color: var(--secondary); padding: 4px 10px; border-radius: 20px; font-weight: 700; display: inline-block; }
+        .status-badge-offline { background: rgba(239,68,68,0.15); color: var(--danger); padding: 4px 10px; border-radius: 20px; font-weight: 700; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-chart-line"></i> لوحة التحكم والإدارة الشاملة (Super Admin)</div>
+        <button class="theme-toggle-btn" onclick="toggleTheme()">الوضع المظلم/المضيء</button>
+    </header>
+
+    <main>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(37,99,235,0.1); color:var(--primary);"><i class="fa-solid fa-utensils"></i></div>
+                <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">المطاعم المسجلة</div>
+                    <div style="font-size:1.4rem; font-weight:800;" id="statRestCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(16,185,129,0.1); color:var(--secondary);"><i class="fa-solid fa-motorcycle"></i></div>
+                <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">الكباتن المسجلين</div>
+                    <div style="font-size:1.4rem; font-weight:800;" id="statCapCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(245,158,11,0.1); color:var(--warning);"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">الطلبات المكتملة</div>
+                    <div style="font-size:1.4rem; font-weight:800;" id="statDeliveredCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- فورم إنشاء حساب -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-user-plus"></i> إنشاء حساب جديد لمطعم أو كابتن</div>
+                <form onsubmit="handleCreateAccount(event)">
+                    <div class="form-group">
+                        <label>نوع الحساب</label>
+                        <select id="accRole" class="form-control">
+                            <option value="restaurant">مطعم 🍔</option>
+                            <option value="captain">كابتن 🏍️</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الاسم</label>
+                        <input type="text" id="accName" class="form-control" placeholder="اسم المطعم أو الكابتن" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الإيميل أو الهاتف (للدخول)</label>
+                        <input type="text" id="accEmail" class="form-control" placeholder="email أو 01xxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة السر</label>
+                        <input type="text" id="accPassword" class="form-control" placeholder="كلمة السر" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">حفظ وتفعيل الحساب</button>
+                </form>
+            </div>
+
+            <!-- جدول الحسابات المفعلة وحالة الكابتن (متصل/عطلة) -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-users"></i> الحسابات المفعلة وحالة الكباتن الحية</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>النوع</th>
+                            <th>الاسم</th>
+                            <th>الحالة (متصل/عطلة)</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- تقارير الأداء التفصيلية -->
+            <div class="card" style="grid-column: 1/-1;">
+                <div class="card-title"><i class="fa-solid fa-list-check"></i> تقارير أداء وحالات المطاعم والكباتن</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>النوع</th>
+                            <th>الطلبات المكتملة</th>
+                            <th>إجمالي الأرباح / المبيعات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="performanceTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const channel = new BroadcastChannel('delivery_system_channel');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            renderDashboard();
+        });
+
+        channel.onmessage = () => renderDashboard();
+
+        function initTheme() {
+            const saved = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+        function toggleTheme() {
+            const curr = document.documentElement.getAttribute('data-theme');
+            const next = curr === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function handleCreateAccount(e) {
+            e.preventDefault();
+            const role = document.getElementById('accRole').value;
+            const name = document.getElementById('accName').value.trim();
+            const email = document.getElementById('accEmail').value.trim();
+            const password = document.getElementById('accPassword').value.trim();
+
+            const users = JSON.parse(localStorage.getItem('app_users') || '[]');
+            if (users.find(u => u.email === email)) {
+                alert('هذا الحساب مسجل مسبقاً!');
+                return;
+            }
+
+            users.push({ id: 'U-' + Date.now(), role, name, email, password });
+            localStorage.setItem('app_users', JSON.stringify(users));
+            channel.postMessage({ type: 'USERS_UPDATED' });
+            alert('تم إنشاء الحساب بنجاح!');
+            e.target.reset();
+            renderDashboard();
+        }
+
+        function deleteUser(id) {
+            if (confirm('حذف هذا الحساب؟')) {
+                let users = JSON.parse(localStorage.getItem('app_users') || '[]');
+                users = users.filter(u => u.id !== id);
+                localStorage.setItem('app_users', JSON.stringify(users));
+                channel.postMessage({ type: 'USERS_UPDATED' });
+                renderDashboard();
+            }
+        }
+
+        function renderDashboard() {
+            const users = JSON.parse(localStorage.getItem('app_users') || '[]');
+            const delivered = JSON.parse(localStorage.getItem('delivered_history') || '[]');
+
+            const rests = users.filter(u => u.role === 'restaurant');
+            const caps = users.filter(u => u.role === 'captain');
+
+            document.getElementById('statRestCount').innerText = rests.length;
+            document.getElementById('statCapCount').innerText = caps.length;
+            document.getElementById('statDeliveredCount').innerText = delivered.length;
+
+            // جدول المستخدمين والحالة (متصل / عطلة)
+            document.getElementById('usersTableBody').innerHTML = users.map(u => {
+                let statusBadge = '-';
+                if (u.role === 'captain') {
+                    const st = localStorage.getItem(`captain_status_${u.email}`) || 'متصل';
+                    if (st === 'متصل') {
+                        statusBadge = `<span class="status-badge-online"><i class="fa-solid fa-circle" style="font-size:8px;"></i> متصل (شغال)</span>`;
+                    } else {
+                        statusBadge = `<span class="status-badge-offline"><i class="fa-solid fa-circle" style="font-size:8px;"></i> عطلة</span>`;
+                    }
+                } else {
+                    statusBadge = `<span style="color:var(--text-muted);">مطعم معتمد</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td>${u.role === 'restaurant' ? 'مطعم 🍔' : 'كابتن 🏍️'}</td>
+                        <td><strong>${u.name}</strong></td>
+                        <td>${statusBadge}</td>
+                        <td><button class="btn btn-danger" onclick="deleteUser('${u.id}')">حذف</button></td>
+                    </tr>
+                `;
+            }).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">لا توجد حسابات مضافة</td></tr>`;
+
+            // تقارير الأداء
+            const perfBody = document.getElementById('performanceTableBody');
+            let perfHtml = '';
+            
+            rests.forEach(r => {
+                const rOrders = delivered.filter(d => d.restEmail === r.email);
+                const totalSales = rOrders.reduce((sum, o) => sum + (o.foodPrice || 0), 0);
+                perfHtml += `
+                    <tr>
+                        <td><strong>${r.name}</strong></td>
+                        <td>مطعم 🍔</td>
+                        <td>${rOrders.length} طلبات</td>
+                        <td style="color:var(--primary); font-weight:700;">${totalSales} ج.م (مبيعات طعام)</td>
+                    </tr>
+                `;
+            });
+
+            caps.forEach(c => {
+                const cOrders = delivered.filter(d => d.captainEmail === c.email);
+                const totalEarn = cOrders.reduce((sum, o) => sum + (o.deliveryPrice || 0), 0);
+                perfHtml += `
+                    <tr>
+                        <td><strong>${c.name}</strong></td>
+                        <td>كابتن 🏍️</td>
+                        <td>${cOrders.length} توصيلات</td>
+                        <td style="color:var(--secondary); font-weight:700;">${totalEarn} ج.م (أجر توصيل)</td>
+                    </tr>
+                `;
+            });
+
+            perfBody.innerHTML = perfHtml || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">لا توجد بيانات أداء حتى الآن</td></tr>`;
+        }
+    </script>
+</body>
+</html>

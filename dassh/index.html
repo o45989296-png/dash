@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم والإدارة الشاملة - Dashboard</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- External CSS File -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-chart-line"></i> لوحة التحكم والإدارة الشاملة (Super Admin)</div>
+        <button class="theme-toggle-btn" onclick="toggleTheme()">الوضع المظلم/المضيء</button>
+    </header>
+
+    <main>
+        <!-- إحصائيات سريعة -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(37,99,235,0.1); color:var(--primary);"><i class="fa-solid fa-utensils"></i></div>
+                <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">المطاعم المسجلة</div>
+                    <div style="font-size:1.4rem; font-weight:800;" id="statRestCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(16,185,129,0.1); color:var(--secondary);"><i class="fa-solid fa-motorcycle"></i></div>
+                <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">الكباتن المسجلين</div>
+                    <div style="font-size:1.4rem; font-weight:800;" id="statCapCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(245,158,11,0.1); color:var(--warning);"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">الطلبات المكتملة</div>
+                    <div style="font-size:1.4rem; font-weight:800;" id="statDeliveredCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- فورم إنشاء حساب -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-user-plus"></i> إنشاء حساب جديد لمطعم أو كابتن</div>
+                <form onsubmit="handleCreateAccount(event)">
+                    <div class="form-group">
+                        <label>نوع الحساب</label>
+                        <select id="accRole" class="form-control">
+                            <option value="restaurant">مطعم 🍔</option>
+                            <option value="captain">كابتن 🏍️</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الاسم</label>
+                        <input type="text" id="accName" class="form-control" placeholder="اسم المطعم أو الكابتن" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الإيميل أو الهاتف (للدخول)</label>
+                        <input type="text" id="accEmail" class="form-control" placeholder="email أو 01xxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة السر</label>
+                        <input type="text" id="accPassword" class="form-control" placeholder="كلمة السر" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">حفظ وتفعيل الحساب</button>
+                </form>
+            </div>
+
+            <!-- جدول الحسابات المفعلة وحالة الكابتن -->
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-users"></i> الحسابات المفعلة وحالة الكباتن الحية</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>النوع</th>
+                            <th>الاسم</th>
+                            <th>الحالة (متصل/عطلة)</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- تقارير الأداء التفصيلية -->
+            <div class="card" style="grid-column: 1/-1;">
+                <div class="card-title"><i class="fa-solid fa-list-check"></i> تقارير أداء وحالات المطاعم والكباتن</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>النوع</th>
+                            <th>الطلبات المكتملة</th>
+                            <th>إجمالي الأرباح / المبيعات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="performanceTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- External JS File -->
+    <script src="script.js"></script>
+</body>
+</html>
